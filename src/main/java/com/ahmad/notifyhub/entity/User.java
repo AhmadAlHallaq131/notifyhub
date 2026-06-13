@@ -10,7 +10,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false ,unique = true)
     private String email;
@@ -20,4 +20,29 @@ public class User {
 
     @Column(name = "created_at" , nullable = false)
     private LocalDateTime createdAt;
+
+    protected User() {
+    }
+
+    public User(String email, String passwordHash, LocalDateTime createdAt) {
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
