@@ -1,6 +1,8 @@
 spring:
   application:
     name: notifyhub
+  config:
+    import: "optional:file:.env[.properties]"
 
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/notifyhub}
@@ -15,3 +17,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: ${JWT_EXPIRATION_MS:3600000}
