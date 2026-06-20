@@ -1,9 +1,11 @@
 package com.ahmad.notifyhub.service;
 
 import com.ahmad.notifyhub.dto.request.CreateTaskListRequest;
+import com.ahmad.notifyhub.dto.request.UpdateTaskListRequest;
 import com.ahmad.notifyhub.dto.response.TaskListResponse;
 import com.ahmad.notifyhub.entity.TaskList;
 import com.ahmad.notifyhub.entity.User;
+import com.ahmad.notifyhub.exception.ResourceNotFoundException;
 import com.ahmad.notifyhub.mapper.TaskListMapper;
 import com.ahmad.notifyhub.repository.TaskListRepository;
 import com.ahmad.notifyhub.repository.UserRepository;
@@ -33,7 +35,7 @@ public class TaskListService {
     public TaskListResponse createList(CreateTaskListRequest request, String email
     ) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not Found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -58,6 +60,29 @@ public class TaskListService {
                 .toList();
     }
 
+
+    @Transactional
+    public TaskListResponse updateList(Long id, UpdateTaskListRequest request, String userEmail
+    ){
+        TaskList taskList = taskListRepository.findByIdAndUserEmail(id, userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Task list not found"));
+
+        taskList.rename(
+                request.name().trim(),
+                LocalDateTime.now()
+        );
+
+        return taskListMapper.toResponse(taskList);
+    }
+
+
+    @Transactional
+    public void deleteList(Long id, String userEmail){
+        TaskList taskList = taskListRepository.findByIdAndUserEmail(id,userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Task list not found"));
+
+        taskListRepository.delete(taskList);
+    }
 }
 
 

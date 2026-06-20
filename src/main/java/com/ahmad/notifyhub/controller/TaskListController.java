@@ -1,6 +1,7 @@
 package com.ahmad.notifyhub.controller;
 
 import com.ahmad.notifyhub.dto.request.CreateTaskListRequest;
+import com.ahmad.notifyhub.dto.request.UpdateTaskListRequest;
 import com.ahmad.notifyhub.dto.response.TaskListResponse;
 import com.ahmad.notifyhub.service.TaskListService;
 import jakarta.validation.Valid;
@@ -39,5 +40,24 @@ public class TaskListController {
         return ResponseEntity.ok(responses);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskListResponse> updateList(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTaskListRequest request,
+            Authentication authentication
+            ){
+        TaskListResponse response = taskListService.updateList(id,request,authentication.getName());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteList(
+            @PathVariable Long id,
+            Authentication authentication
+    ){
+        taskListService.deleteList(id,authentication.getName());
+        return ResponseEntity.noContent().build();
+    }
 
 }
