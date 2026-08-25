@@ -63,7 +63,7 @@ public class AuthService {
                 .toLowerCase(Locale.ROOT);
 
         User user = userRepository.findByEmail(normalizedEmail)
-                .orElseThrow(() -> new InvalidCredentialsException());
+                .orElseThrow(InvalidCredentialsException::new);
 
         boolean passwordMatch = passwordEncoder.matches(request.password(), user.getPasswordHash());
 

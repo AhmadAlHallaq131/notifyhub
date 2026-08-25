@@ -1,0 +1,28 @@
+package com.ahmad.notifyhub.mapper;
+
+import com.ahmad.notifyhub.dto.response.TaskResponse;
+import com.ahmad.notifyhub.entity.Task;
+import org.springframework.stereotype.Component;
+
+
+@Component
+public class TaskMapper {
+    public TaskResponse toResponse(Task task){
+        Long taskListId = task.getTaskList() == null
+                ? null
+                : task.getTaskList().getId();
+
+        return new TaskResponse(
+                task.getId(),
+                task.getTitle(),
+                task.getNotes(),
+                task.getPriority(),
+                task.getStatus(),
+                task.getDueDate(),
+                task.getCompletedAt(),
+                taskListId,
+                task.getCreatedAt(),
+                task.getUpdatedAt()
+        );
+    }
+}
