@@ -8,6 +8,7 @@ import com.ahmad.notifyhub.entity.User;
 import com.ahmad.notifyhub.exception.ResourceNotFoundException;
 import com.ahmad.notifyhub.mapper.TaskListMapper;
 import com.ahmad.notifyhub.repository.TaskListRepository;
+import com.ahmad.notifyhub.repository.TaskRepository;
 import com.ahmad.notifyhub.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,17 @@ public class TaskListService {
     private final TaskListRepository taskListRepository;
     private final UserRepository userRepository;
     private final TaskListMapper taskListMapper;
+    private final TaskRepository taskRepository;
 
     public TaskListService(TaskListRepository taskListRepository,
                            UserRepository userRepository,
-                           TaskListMapper taskListMapper) {
+                           TaskListMapper taskListMapper,
+                           TaskRepository taskRepository
+    ) {
         this.taskListRepository = taskListRepository;
         this.userRepository = userRepository;
         this.taskListMapper = taskListMapper;
+        this.taskRepository = taskRepository;
     }
 
     @Transactional
@@ -80,6 +85,10 @@ public class TaskListService {
     public void deleteList(Long id, String userEmail){
         TaskList taskList = taskListRepository.findByIdAndUserEmail(id,userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Task list not found"));
+
+        LocalDateTime now = LocalDateTime.now();
+        taskRepository.findByTaskListIdAndUserEmail(taskList.getId(),userEmail)
+                        .forEach(task -> task.removeFromTaskList(now));
 
         taskListRepository.delete(taskList);
     }

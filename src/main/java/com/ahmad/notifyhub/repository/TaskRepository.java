@@ -14,6 +14,8 @@ public interface TaskRepository extends JpaRepository<Task,Long> {
 
     Optional<Task> findByIdAndUserEmail(Long id, String email);
 
+    List<Task> findByTaskListIdAndUserEmail(Long taskListId, String userEmail);
+
     List<Task> findByUserEmailAndStatusAndDueDateBeforeOrderByDueDateAsc(
             String email,
             TaskStatus status,

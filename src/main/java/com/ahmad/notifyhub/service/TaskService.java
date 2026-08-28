@@ -7,6 +7,7 @@ import com.ahmad.notifyhub.entity.Task;
 import com.ahmad.notifyhub.entity.TaskList;
 import com.ahmad.notifyhub.entity.User;
 import com.ahmad.notifyhub.entity.enums.TaskPriority;
+import com.ahmad.notifyhub.entity.enums.TaskStatus;
 import com.ahmad.notifyhub.exception.ResourceNotFoundException;
 import com.ahmad.notifyhub.mapper.TaskMapper;
 import com.ahmad.notifyhub.repository.TaskListRepository;
@@ -63,7 +64,6 @@ public class TaskService {
                 ? TaskPriority.MEDIUM
                 : request.priority();
 
-
         LocalDateTime now = LocalDateTime.now();
 
         Task task = new Task(
@@ -114,6 +114,57 @@ public class TaskService {
         );
 
         return  taskMapper.toResponse(task);
+    }
+
+    @Transactional(readOnly = true)
+    public TaskResponse getTask(Long taskId, String userEmail) {
+        Task task = taskRepository.findByIdAndUserEmail(taskId, userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        return taskMapper.toResponse(task);
+    }
+
+    @Transactional
+    public void deleteTask(
+            Long taskId,
+            String userEmail
+    ){
+        Task task = taskRepository.findByIdAndUserEmail(taskId,userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Task not found"
+                ));
+        taskRepository.delete(task);
+    }
+
+    @Transactional
+    public TaskResponse completeTask(Long taskId, String userEmail){
+        Task task = taskRepository.findByIdAndUserEmail(taskId,userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("task not found"));
+        LocalDateTime now = LocalDateTime.now();
+        task.markCompleted(now,now);
+        return taskMapper.toResponse(task);
+    }
+
+    @Transactional
+    public TaskResponse reopenTask(Long taskId, String userEmail){
+        Task task = taskRepository.findByIdAndUserEmail(taskId,userEmail)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("task not found"));
+        task.reopen(LocalDateTime.now());
+        return taskMapper.toResponse(task);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskResponse> getOverdueTasks(String userEmail){
+        return taskRepository
+                .findByUserEmailAndStatusAndDueDateBeforeOrderByDueDateAsc(
+                        userEmail,
+                        TaskStatus.PENDING,
+                        LocalDateTime.now()
+                ).stream()
+                .map(taskMapper::toResponse)
+                .toList();
+
     }
 }
 

@@ -3,9 +3,11 @@ package com.ahmad.notifyhub.entity;
 import com.ahmad.notifyhub.entity.enums.TaskPriority;
 import com.ahmad.notifyhub.entity.enums.TaskStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "tasks")
 public class Task {
@@ -91,47 +93,26 @@ public class Task {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
-        return id;
+    public void markCompleted(
+            LocalDateTime completedAt,
+            LocalDateTime updatedAt
+    ) {
+        this.status = TaskStatus.COMPLETED;
+        this.completedAt = completedAt;
+        this.updatedAt = updatedAt;
     }
 
-    public String getTitle() {
-        return title;
+    public void reopen(
+            LocalDateTime updatedAt
+    ){
+        this.status = TaskStatus.PENDING;
+        this.completedAt = null;
+        this.updatedAt = updatedAt;
     }
 
-    public String getNotes() {
-        return notes;
+    public void removeFromTaskList(LocalDateTime updatedAt) {
+        this.taskList = null;
+        this.updatedAt = updatedAt;
     }
 
-    public TaskPriority getPriority() {
-        return priority;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public LocalDateTime getDueDate() {
-        return dueDate;
-    }
-
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public TaskList getTaskList() {
-        return taskList;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 }
