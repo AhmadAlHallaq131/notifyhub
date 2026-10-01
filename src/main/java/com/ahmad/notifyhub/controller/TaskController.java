@@ -100,5 +100,23 @@ public class TaskController {
         List<TaskResponse> tasks = taskService.getOverdueTasks(authentication.getName());
         return ResponseEntity.ok(tasks);
     }
+
+    @PostMapping("/{taskId}/tags/{tagId}")
+    public TaskResponse addTagToTask(
+            @PathVariable Long taskId,
+            @PathVariable Long tagId,
+            Authentication authentication
+    ) {
+        return taskService.addTagToTask(taskId, tagId, authentication.getName());
+    }
+
+    @DeleteMapping("/{taskId}/tags/{tagId}")
+    public TaskResponse removeTagFromTask(
+            @PathVariable Long taskId,
+            @PathVariable Long tagId,
+            Authentication authentication
+    ) {
+        return taskService.removeTagFromTask(taskId, tagId, authentication.getName());
+    }
 }
 

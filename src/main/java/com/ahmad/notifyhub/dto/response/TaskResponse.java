@@ -4,6 +4,7 @@ import com.ahmad.notifyhub.entity.enums.TaskPriority;
 import com.ahmad.notifyhub.entity.enums.TaskStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record TaskResponse(
         Long id,
@@ -15,7 +16,8 @@ public record TaskResponse(
         LocalDateTime completedAt,
         Long taskListId,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        List<Long> tagIds
 
 ) {
 }

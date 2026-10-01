@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -45,6 +47,14 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_list_id")
     private TaskList taskList;
+
+    @ManyToMany
+    @JoinTable(
+            name = "task_tags",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>();
 
 
     @Column(name = "created_at",nullable = false)
@@ -112,6 +122,16 @@ public class Task {
 
     public void removeFromTaskList(LocalDateTime updatedAt) {
         this.taskList = null;
+        this.updatedAt = updatedAt;
+    }
+
+    public void addTag(Tag tag, LocalDateTime updatedAt) {
+        this.tags.add(tag);
+        this.updatedAt = updatedAt;
+    }
+
+    public void removeTag(Tag tag, LocalDateTime updatedAt) {
+        this.tags.remove(tag);
         this.updatedAt = updatedAt;
     }
 

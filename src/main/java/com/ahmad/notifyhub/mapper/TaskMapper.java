@@ -4,6 +4,7 @@ import com.ahmad.notifyhub.dto.response.TaskResponse;
 import com.ahmad.notifyhub.entity.Task;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 
 @Component
 public class TaskMapper {
@@ -11,6 +12,11 @@ public class TaskMapper {
         Long taskListId = task.getTaskList() == null
                 ? null
                 : task.getTaskList().getId();
+
+        List<Long> tagIds = task.getTags().stream()
+                .map(tag -> tag.getId())
+                .sorted()
+                .toList();
 
         return new TaskResponse(
                 task.getId(),
@@ -22,7 +28,8 @@ public class TaskMapper {
                 task.getCompletedAt(),
                 taskListId,
                 task.getCreatedAt(),
-                task.getUpdatedAt()
+                task.getUpdatedAt(),
+                tagIds
         );
     }
 }
