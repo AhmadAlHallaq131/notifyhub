@@ -26,6 +26,7 @@ public class TaskMapper {
                 task.getStatus(),
                 task.getDueDate(),
                 task.getCompletedAt(),
+                task.getMyDayDate(),
                 taskListId,
                 task.getCreatedAt(),
                 task.getUpdatedAt(),

@@ -11,11 +11,13 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
 @Entity
 @Table(
         name = "tags",
@@ -61,27 +63,4 @@ public class Tag {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Set<Task> getTasks() {
-        return tasks;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 }

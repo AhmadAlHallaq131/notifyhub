@@ -101,6 +101,27 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    @GetMapping("/my-day")
+    public List<TaskResponse> getMyDayTasks(Authentication authentication) {
+        return taskService.getMyDayTasks(authentication.getName());
+    }
+
+    @PatchMapping("/{taskId}/my-day")
+    public TaskResponse addTaskToMyDay(
+            @PathVariable Long taskId,
+            Authentication authentication
+    ) {
+        return taskService.addTaskToMyDay(taskId, authentication.getName());
+    }
+
+    @DeleteMapping("/{taskId}/my-day")
+    public TaskResponse removeTaskFromMyDay(
+            @PathVariable Long taskId,
+            Authentication authentication
+    ) {
+        return taskService.removeTaskFromMyDay(taskId, authentication.getName());
+    }
+
     @PostMapping("/{taskId}/tags/{tagId}")
     public TaskResponse addTagToTask(
             @PathVariable Long taskId,

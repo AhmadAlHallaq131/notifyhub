@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -170,6 +171,35 @@ public class TaskService {
                 .map(taskMapper::toResponse)
                 .toList();
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskResponse> getMyDayTasks(String userEmail) {
+        return taskRepository.findByUserEmailAndMyDayDateOrderByCreatedAtAsc(
+                        userEmail,
+                        LocalDate.now()
+                )
+                .stream()
+                .map(taskMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public TaskResponse addTaskToMyDay(Long taskId, String userEmail) {
+        Task task = taskRepository.findByIdAndUserEmail(taskId, userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        task.addToMyDay(LocalDate.now(), LocalDateTime.now());
+        return taskMapper.toResponse(task);
+    }
+
+    @Transactional
+    public TaskResponse removeTaskFromMyDay(Long taskId, String userEmail) {
+        Task task = taskRepository.findByIdAndUserEmail(taskId, userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        task.removeFromMyDay(LocalDateTime.now());
+        return taskMapper.toResponse(task);
     }
 
     @Transactional

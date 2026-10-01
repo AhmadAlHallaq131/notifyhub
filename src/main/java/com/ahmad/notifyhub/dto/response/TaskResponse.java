@@ -3,6 +3,7 @@ package com.ahmad.notifyhub.dto.response;
 import com.ahmad.notifyhub.entity.enums.TaskPriority;
 import com.ahmad.notifyhub.entity.enums.TaskStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public record TaskResponse(
         TaskStatus status,
         LocalDateTime dueDate,
         LocalDateTime completedAt,
+        LocalDate myDayDate,
         Long taskListId,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,

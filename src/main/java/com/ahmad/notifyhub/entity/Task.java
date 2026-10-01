@@ -5,6 +5,7 @@ import com.ahmad.notifyhub.entity.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +39,8 @@ public class Task {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
+    @Column(name = "my_day_date")
+    private LocalDate myDayDate;
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -132,6 +135,16 @@ public class Task {
 
     public void removeTag(Tag tag, LocalDateTime updatedAt) {
         this.tags.remove(tag);
+        this.updatedAt = updatedAt;
+    }
+
+    public void addToMyDay(LocalDate myDayDate, LocalDateTime updatedAt) {
+        this.myDayDate = myDayDate;
+        this.updatedAt = updatedAt;
+    }
+
+    public void removeFromMyDay(LocalDateTime updatedAt) {
+        this.myDayDate = null;
         this.updatedAt = updatedAt;
     }
 

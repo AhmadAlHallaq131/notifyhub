@@ -1,9 +1,11 @@
 package com.ahmad.notifyhub.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "users")
 public class User {
@@ -30,19 +32,4 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 }

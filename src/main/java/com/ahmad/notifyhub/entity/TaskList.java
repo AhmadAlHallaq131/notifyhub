@@ -1,9 +1,11 @@
 package com.ahmad.notifyhub.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "task_lists")
 public class TaskList {
@@ -44,23 +46,4 @@ public class TaskList {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 }
