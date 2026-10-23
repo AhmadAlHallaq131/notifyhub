@@ -1,0 +1,9 @@
+.git
+.github
+.idea
+.env
+.env.*
+!.env.example
+target
+HELP.md
+PROJECT_DOCUMENTATION.md

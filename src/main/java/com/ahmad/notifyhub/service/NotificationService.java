@@ -5,9 +5,11 @@ import com.ahmad.notifyhub.entity.Notification;
 import com.ahmad.notifyhub.entity.Reminder;
 import com.ahmad.notifyhub.entity.Task;
 import com.ahmad.notifyhub.entity.enums.NotificationType;
+import com.ahmad.notifyhub.event.NotificationCreatedEvent;
 import com.ahmad.notifyhub.exception.ResourceNotFoundException;
 import com.ahmad.notifyhub.mapper.NotificationMapper;
 import com.ahmad.notifyhub.repository.NotificationRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +21,16 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     public NotificationService(
             NotificationRepository notificationRepository,
-            NotificationMapper notificationMapper
+            NotificationMapper notificationMapper,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional(readOnly = true)
@@ -81,7 +86,12 @@ public class NotificationService {
                 LocalDateTime.now()
         );
 
-        notificationRepository.save(notification);
+        Notification savedNotification = notificationRepository.save(notification);
+        NotificationResponse notificationResponse = notificationMapper.toResponse(savedNotification);
+
+        eventPublisher.publishEvent(
+                new NotificationCreatedEvent(task.getUser().getEmail(), notificationResponse)
+        );
     }
 
     private Notification getOwnedNotification(Long notificationId, String userEmail) {

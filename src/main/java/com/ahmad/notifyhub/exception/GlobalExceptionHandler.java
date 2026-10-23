@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -119,5 +120,22 @@ public class GlobalExceptionHandler {
         );
 
         return  ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, HandlerMethodValidationException.class})
+    public ResponseEntity<ApiErrorResponse> handleBadRequest(
+            Exception exception,
+            HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ApiErrorResponse response = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(response);
     }
 }

@@ -5,6 +5,9 @@ import com.ahmad.notifyhub.dto.request.RegisterRequest;
 import com.ahmad.notifyhub.dto.response.LoginResponse;
 import com.ahmad.notifyhub.dto.response.UserResponse;
 import com.ahmad.notifyhub.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "Register, authenticate, and retrieve the current user.")
 public class AuthController {
 
     private final AuthService authService;
@@ -22,6 +26,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a new account")
+    @SecurityRequirements
     public ResponseEntity<UserResponse> register(
             @Valid @RequestBody RegisterRequest request
             ){
@@ -31,6 +37,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Log in and receive a JWT access token")
+    @SecurityRequirements
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request
             ){

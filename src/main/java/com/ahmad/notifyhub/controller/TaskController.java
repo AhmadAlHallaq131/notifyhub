@@ -2,30 +2,37 @@ package com.ahmad.notifyhub.controller;
 
 import com.ahmad.notifyhub.dto.request.CreateTaskRequest;
 import com.ahmad.notifyhub.dto.request.UpdateTaskRequest;
+import com.ahmad.notifyhub.dto.response.PageResponse;
 import com.ahmad.notifyhub.dto.response.TaskResponse;
-import com.ahmad.notifyhub.entity.Task;
-import com.ahmad.notifyhub.mapper.TaskMapper;
-import com.ahmad.notifyhub.repository.TaskRepository;
+import com.ahmad.notifyhub.entity.enums.TaskPriority;
+import com.ahmad.notifyhub.entity.enums.TaskStatus;
 import com.ahmad.notifyhub.service.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
+@Validated
+@Tag(name = "Tasks", description = "Create, organize, and track tasks owned by the authenticated user.")
+@SecurityRequirement(name = "bearerAuth")
 public class TaskController {
 
     private final TaskService taskService;
-    private final TaskRepository taskRepository;
 
-    public TaskController(TaskService taskService, TaskRepository taskRepository) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.taskRepository = taskRepository;
     }
 
     @PostMapping()
@@ -46,6 +53,32 @@ public class TaskController {
     ){
         return ResponseEntity.ok(
                 taskService.getTasks(authentication.getName()));
+    }
+
+    @GetMapping("/search")
+    public List<TaskResponse> searchTasks(
+            @RequestParam String q,
+            Authentication authentication
+    ) {
+        return taskService.searchTasks(q, authentication.getName());
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "List tasks with pagination, sorting, and filters")
+    public PageResponse<TaskResponse> getTaskPage(
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") Sort.Direction direction,
+            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) TaskPriority priority,
+            @RequestParam(required = false) Long taskListId,
+            @RequestParam(required = false) String q,
+            Authentication authentication
+    ) {
+        return taskService.getTaskPage(
+                authentication.getName(), page, size, sortBy, direction, status, priority, taskListId, q
+        );
     }
 
     @GetMapping("/{taskId}")

@@ -2,6 +2,7 @@ package com.ahmad.notifyhub.service;
 
 import com.ahmad.notifyhub.dto.request.CreateTaskRequest;
 import com.ahmad.notifyhub.dto.request.UpdateTaskRequest;
+import com.ahmad.notifyhub.dto.response.PageResponse;
 import com.ahmad.notifyhub.dto.response.TaskResponse;
 import com.ahmad.notifyhub.entity.Task;
 import com.ahmad.notifyhub.entity.TaskList;
@@ -15,6 +16,9 @@ import com.ahmad.notifyhub.repository.TaskListRepository;
 import com.ahmad.notifyhub.repository.TaskRepository;
 import com.ahmad.notifyhub.repository.TagRepository;
 import com.ahmad.notifyhub.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TaskService {
+
+    private static final Set<String> SORTABLE_FIELDS = Set.of(
+            "createdAt", "updatedAt", "title", "priority", "status", "dueDate"
+    );
 
     private final TaskRepository taskRepository;
     private final TaskListRepository taskListRepository;
@@ -92,6 +101,43 @@ public class TaskService {
         return taskRepository.findByUserEmailOrderByCreatedAtDesc(userEmail).stream()
                 .map(taskMapper::toResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskResponse> searchTasks(String query, String userEmail) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+
+        return taskRepository.searchByUserEmail(userEmail, query.trim())
+                .stream()
+                .map(taskMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<TaskResponse> getTaskPage(
+            String userEmail,
+            int page,
+            int size,
+            String sortBy,
+            Sort.Direction direction,
+            TaskStatus status,
+            TaskPriority priority,
+            Long taskListId,
+            String query
+    ) {
+        if (!SORTABLE_FIELDS.contains(sortBy)) {
+            throw new IllegalArgumentException("Unsupported sort field: " + sortBy);
+        }
+
+        String normalizedQuery = query == null || query.isBlank() ? null : query.trim();
+        Sort sort = Sort.by(direction, sortBy).and(Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return PageResponse.from(taskRepository
+                .findPageByFilters(userEmail, status, priority, taskListId, normalizedQuery, pageable)
+                .map(taskMapper::toResponse));
     }
 
     @Transactional

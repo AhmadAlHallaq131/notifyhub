@@ -31,7 +31,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/register",
-                                "/api/auth/login").permitAll()
+                                "/api/auth/login",
+                                "/actuator/health",
+                                "/actuator/health/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/ws",
+                                "/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
