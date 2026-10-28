@@ -1,0 +1,88 @@
+.my-day-header { position: relative; overflow: hidden; min-height: 166px; align-items: center; isolation: isolate; }
+.my-day-header::before, .my-day-header::after { position: absolute; z-index: -1; content: ""; border-radius: 50%; filter: blur(1px); opacity: .42; }
+.my-day-header::before { width: 230px; height: 230px; top: -140px; right: 10%; background: #8dc6ff; }
+.my-day-header::after { width: 165px; height: 165px; right: -40px; bottom: -102px; background: #bbddff; }
+.my-day-heading { display: grid; gap: 5px; }
+.my-day-date { margin: 0; font-weight: 600; letter-spacing: .01em; opacity: .9; }
+.my-day-greeting { font-size: 13px; opacity: .94; }
+.my-day-actions { display: flex; align-items: center; gap: 14px; }
+.my-day-summary { display: flex; gap: 1px; overflow: hidden; border: 1px solid #ffffff45; border-radius: 9px; background: #0d315940; }
+.my-day-summary div { min-width: 52px; display: grid; justify-items: center; gap: 1px; padding: 6px 8px; }
+.my-day-summary div + div { border-left: 1px solid #ffffff30; }
+.my-day-summary strong { font-size: 15px; line-height: 1.1; }
+.my-day-summary span { font-size: 10px; opacity: .84; }
+
+.suggestions-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 9px;
+  color: #fff;
+  border: 0;
+  background: #ffffff19;
+  border-radius: 2px;
+  font-size: 13px;
+}
+
+.suggestions-button:hover { background: #ffffff2b; }
+
+.empty-state-action { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-top: 16px; padding: 0 10px; color: #fff; border: 0; border-radius: 5px; background: var(--nh-accent); box-shadow: 0 4px 12px #2563eb38; font-size: 12px; font-weight: 600; }
+.empty-state-action:hover { background: var(--nh-accent-hover); }
+
+.suggestions-pane {
+  margin: -14px 0 20px;
+  border: 1px solid #edebe9;
+  background: #fff;
+  box-shadow: 0 2px 8px #00000012;
+}
+
+.suggestions-pane > header {
+  min-height: 57px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 13px;
+  border-bottom: 1px solid #edebe9;
+}
+
+.suggestions-pane strong, .suggestions-pane span { display: block; }
+.suggestions-pane strong { font-size: 14px; font-weight: 600; }
+.suggestions-pane span, .suggestions-pane > p { margin: 3px 0 0; color: #605e5c; font-size: 12px; }
+.suggestions-pane > header button { width: 29px; height: 29px; display: grid; place-items: center; padding: 0; color: #605e5c; border: 0; background: transparent; }
+.suggestion-row { min-height: 43px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 13px; border-bottom: 1px solid #f3f2f1; font-size: 13px; }
+.suggestion-row:last-child { border-bottom: 0; }
+.suggestion-row span { overflow: hidden; color: #323130; text-overflow: ellipsis; white-space: nowrap; }
+.suggestion-row button { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; padding: 4px 6px; color: #2564cf; border: 0; background: transparent; font-size: 12px; }
+.suggestion-row button:hover { background: #f4f8ff; }
+.suggestions-pane > p { padding: 14px; }
+
+.task-quick-actions {
+  display: grid;
+  gap: 2px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #edebe9;
+}
+
+.task-quick-actions button {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 5px;
+  color: #323130;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-size: 13px;
+}
+
+.task-quick-actions button:hover { background: #f3f2f1; }
+.task-quick-actions svg { color: #2564cf; }
+
+@media (max-width: 620px) {
+  .my-day-header { min-height: 178px; align-items: flex-start; flex-direction: column; }
+  .my-day-actions { width: 100%; justify-content: space-between; }
+  .suggestions-button { margin-top: 0; }
+  .suggestion-row button { padding: 4px; }
+}
