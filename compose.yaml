@@ -51,7 +51,7 @@ services:
       MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-false}
       MAIL_SMTP_STARTTLS_ENABLE: ${MAIL_SMTP_STARTTLS_ENABLE:-false}
       MAIL_FROM: ${MAIL_FROM:-no-reply@notifyhub.local}
-      WEBSOCKET_ALLOWED_ORIGINS: ${WEBSOCKET_ALLOWED_ORIGINS:-http://localhost:5173}
+      WEBSOCKET_ALLOWED_ORIGINS: ${WEBSOCKET_ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
       APP_VERSION: ${APP_VERSION:-local}
     ports:
       - "${APP_PORT:-8080}:8080"
@@ -60,6 +60,14 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      - app
 
 volumes:
   postgres-data:

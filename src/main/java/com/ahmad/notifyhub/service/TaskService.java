@@ -135,8 +135,16 @@ public class TaskService {
         Sort sort = Sort.by(direction, sortBy).and(Sort.by(Sort.Direction.ASC, "id"));
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        if (normalizedQuery == null) {
+            return PageResponse.from(taskRepository
+                    .findPageByFilters(userEmail, status, priority, taskListId, pageable)
+                    .map(taskMapper::toResponse));
+        }
+
         return PageResponse.from(taskRepository
-                .findPageByFilters(userEmail, status, priority, taskListId, normalizedQuery, pageable)
+                .findPageByFiltersAndQuery(
+                        userEmail, status, priority, taskListId, normalizedQuery, pageable
+                )
                 .map(taskMapper::toResponse));
     }
 

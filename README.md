@@ -1,6 +1,6 @@
-# NotifyHub Backend
+# NotifyHub
 
-NotifyHub is a Spring Boot API for personal task management, scheduled reminders, in-app notifications, email delivery, and real-time notification updates.
+NotifyHub is a personal task app with a React frontend and Spring Boot backend for reminders, in-app notifications, email delivery, and real-time updates.
 
 ## Features
 
@@ -12,11 +12,12 @@ NotifyHub is a Spring Boot API for personal task management, scheduled reminders
 - RabbitMQ email delivery with retry and dead-letter queues
 - STOMP/WebSocket updates for live in-app notifications
 - OpenAPI documentation and actuator health checks
+- A responsive React interface with a focused, Microsoft To Do-inspired task workflow
 
 ## Architecture
 
 ```text
-REST client
+React client
     |
     v
 Controllers -> Services -> Repositories -> PostgreSQL
@@ -28,6 +29,7 @@ Controllers -> Services -> Repositories -> PostgreSQL
 
 ## Technology
 
+- React, TypeScript, Vite, Axios, and STOMP.js
 - Java 21 and Spring Boot 3.5
 - Spring Security and JWT
 - Spring Data JPA with PostgreSQL
@@ -51,7 +53,7 @@ Controllers -> Services -> Repositories -> PostgreSQL
 docker compose up --build
 ```
 
-The API is available at `http://localhost:8080`. PostgreSQL runs on port `5432`, RabbitMQ on `5672`, and the RabbitMQ management UI on `http://localhost:15672`.
+The frontend is available at `http://localhost:5173` and the API at `http://localhost:8080`. PostgreSQL runs on port `5432`, RabbitMQ on `5672`, and the RabbitMQ management UI on `http://localhost:15672`.
 
 Stop the stack with:
 
@@ -68,6 +70,18 @@ Set the required values in your ignored `.env` file, start PostgreSQL and Rabbit
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
+
+### Frontend Development
+
+With the API running on `http://localhost:8080`, start the React development server in a second terminal:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`. Vite proxies `/api` and `/ws` to the backend, so the frontend uses the same authenticated REST and WebSocket routes in development and Docker.
 
 ## Configuration
 
@@ -123,6 +137,13 @@ Run the same verification used in CI:
 
 ```powershell
 .\mvnw.cmd verify
+```
+
+Build the frontend:
+
+```powershell
+cd frontend
+npm run build
 ```
 
 GitHub Actions runs this verification for every push and pull request.

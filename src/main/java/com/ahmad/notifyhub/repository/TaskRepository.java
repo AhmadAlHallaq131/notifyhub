@@ -50,13 +50,27 @@ public interface TaskRepository extends JpaRepository<Task,Long> {
               and (:status is null or task.status = :status)
               and (:priority is null or task.priority = :priority)
               and (:taskListId is null or task.taskList.id = :taskListId)
+            """)
+    Page<Task> findPageByFilters(
+            @Param("userEmail") String userEmail,
+            @Param("status") TaskStatus status,
+            @Param("priority") TaskPriority priority,
+            @Param("taskListId") Long taskListId,
+            Pageable pageable
+    );
+
+    @Query("""
+            select task from Task task
+            where task.user.email = :userEmail
+              and (:status is null or task.status = :status)
+              and (:priority is null or task.priority = :priority)
+              and (:taskListId is null or task.taskList.id = :taskListId)
               and (
-                    :query is null
-                    or lower(task.title) like lower(concat('%', :query, '%'))
+                    lower(task.title) like lower(concat('%', :query, '%'))
                     or lower(coalesce(task.notes, '')) like lower(concat('%', :query, '%'))
               )
             """)
-    Page<Task> findPageByFilters(
+    Page<Task> findPageByFiltersAndQuery(
             @Param("userEmail") String userEmail,
             @Param("status") TaskStatus status,
             @Param("priority") TaskPriority priority,
